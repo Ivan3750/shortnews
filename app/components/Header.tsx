@@ -20,7 +20,7 @@ export default function Header() {
   const navItems = [
     { path: "/", label: "Forside" },
     { path: "/about", label: "Om os" },
-    { path: "/contact", label: "Kontakt" },
+    { path: "/add-news", label: "Tilføj nyhed" },
   ];
 
   const renderLinks = (isMobile = false) =>
@@ -46,8 +46,8 @@ export default function Header() {
     <>
       <header className="w-full flex items-center justify-between px-5 md:px-10 lg:px-16 py-3 bg-white shadow-md ">
         <Link href="/">
-          <div className="text-xl md:text-2xl font-bold cursor-pointer">
-            Short<span className="text-gray-500">nyhed</span>
+          <div className="text-xl md:text-2xl font-bold cursor-pointer text-black">
+            Kort<span className="text-gray-500">Nyhed</span>
           </div>
         </Link>
 

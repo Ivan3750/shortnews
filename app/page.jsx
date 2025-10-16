@@ -15,7 +15,7 @@ const Home = () => {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:4000/api/news");
+        const res = await fetch("http://localhost:4000/news");
         const data = await res.json();
         setNewsData(data);
         console.log("Fetched news:", data);
@@ -51,7 +51,7 @@ const Home = () => {
           {categories.map((category) => (
             <button
               key={category}
-              className={`px-4 py-2 rounded-full text-sm font-medium shadow-sm transition ${
+              className={`px-4 py-2 rounded-full text-sm font-medium shadow-sm transition cursor-pointer ${
                 selectedCategory === category
                   ? "bg-gray-800 text-white"
                   : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
