@@ -43,7 +43,7 @@ const Home = () => {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:8000/news");
+        const res = await fetch("https://news-api-al43.onrender.com/news");
         const data = await res.json();
       
         // Сортуємо за датою (нові зверху)
