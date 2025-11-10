@@ -153,9 +153,9 @@ const Home = () => {
                     }`}
                   >
                     {/* Позначка прочитаного */}
-                    {!isRead && (
+                   {/*  {!isRead && (
                       <span className="absolute top-3 left-3 w-2.5 h-2.5 bg-blue-500 rounded-full shadow-sm"></span>
-                    )}
+                    )} */}
 
                     {/* Передаємо onRead як функцію без параметрів; Home на своїй стороні передає id/idx */}
                     <NewsPost

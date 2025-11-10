@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FaFacebookF, FaInstagram, FaYoutube, FaUser } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-
+import logo from "@/app/assets/images/logo.png"
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("");
@@ -45,7 +45,8 @@ export default function Header() {
   return (
     <>
       <header className="w-full flex items-center justify-between px-5 md:px-10 lg:px-16 py-3 bg-white shadow-md ">
-        <Link href="/">
+        <Link href="/" style={{display: "flex", alignItems: "center"}}>
+        <img src={logo.src} alt="" style={{width: 25, height: 25}}/>
           <div className="text-xl md:text-2xl font-bold cursor-pointer text-black">
             Kort<span className="text-gray-500">Nyhed</span>
           </div>

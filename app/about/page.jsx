@@ -54,11 +54,11 @@ export default function AboutUs() {
             variants={fade}
             className="flex-1 flex justify-center"
           >
-            <img
+            {/* <img
               src="/images/mockup-phone.png"
               alt="KortNyhed app mockup"
               className="w-80 h-auto drop-shadow-xl"
-            />
+            /> */}
           </motion.div>
         </section>
 
