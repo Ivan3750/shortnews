@@ -65,7 +65,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-xl border px-3 py-2 outline-none focus:ring-2 focus:ring-[#5F6560] transition"
+                className="w-full rounded-xl border px-3 text-gray-600 mb-1 py-2 outline-none focus:ring-2 focus:ring-[#5F6560] transition"
                 placeholder="Indtast dit navn"
                 required
               />
@@ -78,7 +78,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border px-3 py-2 outline-none focus:ring-2 focus:ring-[#5F6560] transition"
+              className="w-full rounded-xl border px-3 py-2 text-gray-600 mb-1 outline-none focus:ring-2 focus:ring-[#5F6560] transition"
               placeholder="din@email.dk"
               required
             />
@@ -92,7 +92,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border px-3 py-2 outline-none focus:ring-2 focus:ring-[#5F6560] transition"
+              className="w-full rounded-xl border px-3 py-2 outline-none text-gray-600 mb-1 focus:ring-2 focus:ring-[#5F6560] transition"
               placeholder="••••••••"
               required
             />
