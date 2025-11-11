@@ -1,9 +1,6 @@
 import fs from "fs";
 import mysql from "mysql2/promise";
 
-const sslCA = process.env.DB_SSL_CA
-  ? { ca: fs.readFileSync(process.env.DB_SSL_CA) }
-  : undefined;
 
 export const dbconfig = {
   host: process.env.DB_HOST,
@@ -11,7 +8,6 @@ export const dbconfig = {
   password: process.env.DB_PASSWORD,
   port: Number(process.env.DB_PORT),
   database: process.env.DB_NAME,
-  ssl: sslCA,
 };
 
 export async function getConnection() {
