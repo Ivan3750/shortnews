@@ -25,11 +25,22 @@ const reactions = [
   { icon: HelpCircle, label: "Think", color: "#0ea5e9", count: 0 },
   { icon: CheckCircle, label: "100%", color: "#16a34a", count: 0 },
 ];
+interface NewsItem {
+  id: string | number;
+  title: string;
+  shortText?: string;
+  pubDate: string;
+  source: string;
+  classified?: string;
+  link: string;
+}
 
+// ✅ Type for props
 interface NewsPostProps {
-  item: any;
+  item: NewsItem;
   onRead?: () => void;
 }
+
 
 // 🔹 Додаємо тип для об'єкта лічильників
 type ReactionCounts = Record<string, number>;

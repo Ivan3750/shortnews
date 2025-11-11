@@ -11,14 +11,24 @@ interface JWTPayload {
   exp: number;
 }
 
+interface NewsItem {
+  id: string | number;
+  title: string;
+  shortText?: string;
+  pubDate: string;
+  source: string;
+  classified?: string;
+  link: string;
+}
+
 const categories = ["Alle", "Politik", "Økonomi", "Sport", "Miljø", "Teknologi"];
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState("Alle");
-  const [newsData, setNewsData] = useState<any[]>([]);
+  const [newsData, setNewsData] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [readNewsIds, setReadNewsIds] = useState<string[]>([]);
-  const [lastReadIndex, setLastReadIndex] = useState(0);
+  const [lastReadId, setLastReadId] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
 
   // --- Decode userId from token ---
@@ -41,9 +51,11 @@ const Home = () => {
       try {
         setLoading(true);
         const res = await fetch("/api/news");
+        if (!res.ok) throw new Error("Failed to fetch news");
         const data = await res.json();
+
         const sorted = data.news.sort(
-          (a: any, b: any) =>
+          (a: NewsItem, b: NewsItem) =>
             new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
         );
         setNewsData(sorted);
@@ -53,6 +65,7 @@ const Home = () => {
         setLoading(false);
       }
     };
+
     fetchNews();
   }, []);
 
@@ -67,23 +80,27 @@ const Home = () => {
         const res = await fetch(`/api/read`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        if (!res.ok) throw new Error("Failed to fetch read news");
         const data = await res.json();
-        setReadNewsIds(data.readNews || []);
-        setLastReadIndex((data.readNews?.length || 0) - 1);
+
+        const readList = data.readNews?.map((id: number | string) => String(id)) || [];
+        setReadNewsIds(readList);
+        setLastReadId(readList[readList.length - 1] || null);
       } catch (e) {
         console.error("Error fetching read news:", e);
       }
     };
+
     fetchReadNews();
   }, [userId]);
 
   // --- Mark news as read ---
-  const handleRead = async (id: string, index: number) => {
+  const handleRead = async (id: string | number) => {
     const idStr = String(id);
     if (readNewsIds.includes(idStr)) return;
 
     setReadNewsIds((prev) => [...prev, idStr]);
-    setLastReadIndex(index);
+    setLastReadId(idStr);
 
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -97,26 +114,31 @@ const Home = () => {
         },
         body: JSON.stringify({ newsId: idStr }),
       });
+
       const data = await res.json();
 
-      // Якщо сервер повернув оновлений readCount — можна синхронізувати
       if (data.readNews) {
-        setReadNewsIds(data.readNews.map((id: number) => String(id)));
+        setReadNewsIds(data.readNews.map((id: number | string) => String(id)));
       }
     } catch (e) {
       console.error("Error saving read news:", e);
     }
   };
 
+  // --- Category filtering ---
   const filteredNews =
     selectedCategory === "Alle"
       ? newsData
       : newsData.filter((item) => item.classified === selectedCategory);
 
+  // --- Scroll to last read news item ---
   const handleStartFromLast = () => {
-    const element = document.getElementById(`news-${lastReadIndex}`);
+    if (!lastReadId) return;
+    const element = document.getElementById(`news-${lastReadId}`);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      console.warn("No element found for last read news:", lastReadId);
     }
   };
 
@@ -140,14 +162,16 @@ const Home = () => {
               </button>
             ))}
           </div>
-          <div className="mt-2 flex justify-center">
-            <button
-              onClick={handleStartFromLast}
-              className="px-4 py-1 rounded-md bg-gray-700 text-white text-sm hover:bg-gray-800 transition"
-            >
-              Start fra sidste ulæste
-            </button>
-          </div>
+          {lastReadId && (
+            <div className="mt-2 flex justify-center">
+              <button
+                onClick={handleStartFromLast}
+                className="px-4 py-1 rounded-md bg-gray-700 text-white text-sm hover:bg-gray-800 transition"
+              >
+                Start fra sidste ulæste
+              </button>
+            </div>
+          )}
         </div>
 
         {/* News Feed */}
@@ -163,12 +187,12 @@ const Home = () => {
             </div>
           ) : filteredNews.length > 0 ? (
             <AnimatePresence>
-              {filteredNews.map((n, idx) => {
+              {filteredNews.map((n) => {
                 const isRead = readNewsIds.includes(String(n.id));
                 return (
                   <motion.div
                     key={n.id}
-                    id={`news-${idx}`}
+                    id={`news-${n.id}`}
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
@@ -177,7 +201,7 @@ const Home = () => {
                       isRead ? "opacity-80" : "opacity-100"
                     }`}
                   >
-                    <NewsPost item={n} onRead={() => handleRead(n.id, idx)} />
+                    <NewsPost item={n} onRead={() => handleRead(n.id)} />
                   </motion.div>
                 );
               })}
