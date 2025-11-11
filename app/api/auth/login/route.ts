@@ -1,8 +1,24 @@
 import { getConnection } from "@/app/lib/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { RowDataPacket } from "mysql2/promise";
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret"; // бажано зберігати в .env
+
+interface UserRow extends RowDataPacket {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface InsertResult {
+  insertId: number;
+  affectedRows: number;
+  // Add other fields if needed from MySQL result
+}
+
+
 
 export async function POST(req: Request) {
   try {
@@ -18,22 +34,21 @@ export async function POST(req: Request) {
     const connection = await getConnection();
 
     // Знаходимо користувача
-    const [rows] = await connection.execute(
-      "SELECT id, name, email, password FROM users WHERE email = ?",
-      [email]
-    );
+    const [rows] = await connection.execute<UserRow[]>(
+  "SELECT id, name, email, password FROM users WHERE email = ?",
+  [email]
+);
 
-    const users = rows as any[];
+if (rows.length === 0) {
+  await connection.end();
+  return new Response(JSON.stringify({ error: "Invalid email or password." }), {
+    status: 401,
+    headers: { "Content-Type": "application/json" },
+  });
+}
 
-    if (users.length === 0) {
-      await connection.end();
-      return new Response(JSON.stringify({ error: "Invalid email or password." }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
+const user = rows[0];
 
-    const user = users[0];
     const isValid = await bcrypt.compare(password, user.password);
 
     await connection.end();

@@ -43,10 +43,16 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
 
       // ✅ Перенаправлення після успішного логіну
       window.location.href = "/";
-    } catch (err: any) {
-      console.error("Auth error:", err);
-      setError(err?.message || "Der opstod en fejl ved login/registrering.");
-    } finally {
+    } catch (err: unknown) {
+  console.error("Auth error:", err);
+  if (err instanceof Error) {
+    setError(err.message);
+  } else if (typeof err === "string") {
+    setError(err);
+  } else {
+    setError("Der opstod en fejl ved login/registrering.");
+  }
+} finally {
       setLoading(false);
     }
   }

@@ -1,17 +1,19 @@
 "use client";
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import Link from "next/link";
 import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 import bg from "@/app/assets/images/bg.jpg";
 
-export default function Footer() {
-  const [email, setEmail] = useState("");
-  const [modal, setModal] = useState({
-    open: false,
-    message: "",
-  });
+interface ModalState {
+  open: boolean;
+  message: string;
+}
 
-  const handleSubmit = async (e) => {
+export default function Footer() {
+  const [email, setEmail] = useState<string>("");
+  const [modal, setModal] = useState<ModalState>({ open: false, message: "" });
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email.trim()) return;
 
@@ -51,11 +53,11 @@ export default function Footer() {
         {/* Left Section */}
         <div className="flex flex-col gap-8 lg:w-1/2">
           <div className="flex items-center gap-6">
-         <Link href="/">
-                 <div className="text-xl md:text-2xl font-bold cursor-pointer text-white">
-                   Kort<span className="text-gray-500">Nyhed</span>
-                 </div>
-               </Link>
+            <Link href="/">
+              <div className="text-xl md:text-2xl font-bold cursor-pointer text-white">
+                Kort<span className="text-gray-500">Nyhed</span>
+              </div>
+            </Link>
             <div className="flex gap-3">
               {[
                 { Icon: FaFacebookF, href: "https://facebook.com" },
@@ -84,10 +86,7 @@ export default function Footer() {
         {/* Right Section */}
         <div className="lg:w-1/2 flex flex-col items-start lg:items-end gap-4">
           <p className="text-sm text-gray-300">Tilmeld dig vores nyhedsbrev</p>
-          <form
-            className="w-full flex flex-col sm:flex-row gap-3"
-            onSubmit={handleSubmit}
-          >
+          <form className="w-full flex flex-col sm:flex-row gap-3" onSubmit={handleSubmit}>
             <input
               type="email"
               placeholder="Email"

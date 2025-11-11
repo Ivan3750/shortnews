@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { getConnection } from "@/app/lib/db";
+import { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 
 // --- Отримати userId з токена ---
-function getUserIdFromAuth(req: Request) {
+function getUserIdFromAuth(req: Request): number | null {
   const auth = req.headers.get("authorization");
   if (!auth) return null;
   const token = auth.split(" ")[1];
@@ -17,6 +18,14 @@ function getUserIdFromAuth(req: Request) {
   } catch {
     return null;
   }
+}
+
+interface UserRead extends RowDataPacket {
+  news_id: number;
+}
+
+interface UserInfo extends RowDataPacket {
+  read_count: number;
 }
 
 // --- Позначити новину як прочитану ---
@@ -33,34 +42,36 @@ export async function POST(req: Request) {
     const conn = await getConnection();
 
     // 1️⃣ Додаємо запис (уникаємо дублювання)
-    const [result] = await conn.execute(
+    const [result] = await conn.execute<ResultSetHeader>(
       `INSERT IGNORE INTO user_read (user_id, news_id) VALUES (?, ?)`,
       [userId, newsId]
     );
 
     // 2️⃣ Якщо реально вставили новий запис — перерахуємо кількість
-    if ((result as any).affectedRows > 0) {
-      const [[countResult]]: any = await conn.execute(
+    if (result.affectedRows > 0) {
+      const [[countResult]] = await conn.execute<RowDataPacket[]>(
         `SELECT COUNT(*) AS total FROM user_read WHERE user_id = ?`,
         [userId]
       );
-      const totalRead = countResult.total;
 
-      await conn.execute(`UPDATE users SET read_count = ? WHERE id = ?`, [
-        totalRead,
-        userId,
-      ]);
+      const totalRead = (countResult as any).total as number;
+
+      await conn.execute<ResultSetHeader>(
+        `UPDATE users SET read_count = ? WHERE id = ?`,
+        [totalRead, userId]
+      );
     }
 
     // 3️⃣ Повертаємо актуальний список
-    const [rows] = await conn.execute(
+    const [rows] = await conn.execute<UserRead[]>(
       `SELECT news_id FROM user_read WHERE user_id = ?`,
       [userId]
     );
 
     await conn.end();
 
-    const readNews = (rows as any[]).map((r) => r.news_id);
+    const readNews = rows.map((r) => r.news_id);
+
     return NextResponse.json({
       userId,
       readCount: readNews.length,
@@ -81,19 +92,19 @@ export async function GET(req: Request) {
 
     const conn = await getConnection();
 
-    const [rows] = await conn.execute(
+    const [rows] = await conn.execute<UserRead[]>(
       `SELECT news_id FROM user_read WHERE user_id = ?`,
       [userId]
     );
 
-    const [[userInfo]]: any = await conn.execute(
+    const [[userInfo]] = await conn.execute<UserInfo[]>(
       `SELECT read_count FROM users WHERE id = ?`,
       [userId]
     );
 
     await conn.end();
 
-    const readNews = (rows as any[]).map((r) => r.news_id);
+    const readNews = rows.map((r) => r.news_id);
     const readCount = userInfo?.read_count ?? readNews.length ?? 0;
 
     return NextResponse.json({ userId, readCount, readNews });

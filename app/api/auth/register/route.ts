@@ -1,8 +1,13 @@
 import { getConnection } from "@/app/lib/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 
-const JWT_SECRET = process.env.JWT_SECRET || "supersecret"; // .env
+const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+
+interface ExistingUser extends RowDataPacket {
+  id: number;
+}
 
 export async function POST(req: Request) {
   try {
@@ -18,12 +23,12 @@ export async function POST(req: Request) {
     const connection = await getConnection();
 
     // Перевіряємо чи є такий користувач
-    const [existing] = await connection.execute(
+    const [existing] = await connection.execute<ExistingUser[]>(
       "SELECT id FROM users WHERE email = ?",
       [email]
     );
 
-    if ((existing as any[]).length > 0) {
+    if (existing.length > 0) {
       await connection.end();
       return new Response(JSON.stringify({ error: "User already exists." }), {
         status: 400,
@@ -34,7 +39,7 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Додаємо користувача
-    const [result]: any = await connection.execute(
+    const [result] = await connection.execute<ResultSetHeader>(
       "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
       [name, email, hashedPassword]
     );
