@@ -43,8 +43,9 @@ const Home = () => {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://shortnews.eu-4.evennode.com/news");
-        const data = await res.json();
+    const res = await fetch("/api/news");
+const data = await res.json();
+
       
         // Сортуємо за датою (нові зверху)
         const sorted = data.news.sort(
