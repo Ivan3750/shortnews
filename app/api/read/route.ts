@@ -20,6 +20,11 @@ function getUserIdFromAuth(req: Request): number | null {
   }
 }
 
+// --- Типи для MySQL ---
+interface CountResult extends RowDataPacket {
+  total: number;
+}
+
 interface UserRead extends RowDataPacket {
   news_id: number;
 }
@@ -49,12 +54,12 @@ export async function POST(req: Request) {
 
     // 2️⃣ Якщо реально вставили новий запис — перерахуємо кількість
     if (result.affectedRows > 0) {
-      const [[countResult]] = await conn.execute<RowDataPacket[]>(
+      const [[countResult]] = await conn.execute<CountResult[]>(
         `SELECT COUNT(*) AS total FROM user_read WHERE user_id = ?`,
         [userId]
       );
 
-      const totalRead = (countResult as any).total as number;
+      const totalRead = countResult.total;
 
       await conn.execute<ResultSetHeader>(
         `UPDATE users SET read_count = ? WHERE id = ?`,
