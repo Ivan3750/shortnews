@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Shortnews
 
-## Getting Started
+Shortnews is an actively growing startup that rethinks how people consume news. The platform aggregates news from major Danish media sources and uses AI to analyze, summarize, and filter information — delivering only the most important news in a short, clear format.
 
-First, run the development server:
+The goal of Shortnews is simple: help people stay informed without information overload.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+![Homepage](public/homepage.png)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Idea & Vision
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Modern news platforms overwhelm users with long articles, repeated topics, and unnecessary details. Shortnews solves this problem by combining news aggregation with AI-powered summarization.
 
-## Learn More
+Inspired by the concise style of **Ukrainian Telegram news channels**, Shortnews delivers short, meaningful updates that can be read in seconds.
 
-To learn more about Next.js, take a look at the following resources:
+Our vision is to become a fast, reliable daily news source for people who value time and clarity.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧠 How Shortnews Works
 
-## Deploy on Vercel
+1. News is collected from multiple Danish news outlets  
+2. AI analyzes articles and extracts key information  
+3. Long texts are transformed into short summaries  
+4. Only the most relevant and important news is selected  
+5. Users read brief, high-value news updates instead of full articles  
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ✨ Key Features
+
+- Aggregation of Danish news sources  
+- AI-based news summarization  
+- Intelligent filtering of important topics  
+- Short, Telegram-style news format  
+- Clean, modern, and minimalistic UI  
+- Backend API built with Python  
+
+---
+
+## 🖼️ Screenshots
+
+> *(Add screenshots of the project interface here)*
+
+
+
