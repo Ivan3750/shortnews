@@ -39,9 +39,5 @@ Our vision is to become a fast, reliable daily news source for people who value 
 
 ---
 
-## 🖼️ Screenshots
-
-> *(Add screenshots of the project interface here)*
-
 
 
