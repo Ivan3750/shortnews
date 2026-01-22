@@ -31,7 +31,6 @@ const Home = () => {
   const [lastReadId, setLastReadId] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
 
-  // --- Decode userId from token ---
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
